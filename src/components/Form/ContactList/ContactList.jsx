@@ -12,9 +12,10 @@ export const ContactList = ({ data }) => {
     <ul>
       {data.map(contact => {
         return (
-          <li key={contact.id}>
-            {contact.name}: {contact.phone}{' '}
+          <li className="mb-2" key={contact.id}>
+            {contact.name}: {contact.number}{' '}
             <button
+              className=" bg-slate-500 rounded-lg px-4 disabled:bg-slate-200"
               type="button"
               disabled={isLoading}
               onClick={() => handleClick(contact.id)}

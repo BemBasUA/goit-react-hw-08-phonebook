@@ -26,10 +26,11 @@ export const Form = props => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <label>
+    <form className="mb-8" onSubmit={handleSubmit}>
+      <label className="mr-2">
         Name
         <input
+          className="border rounded"
           type="text"
           name="name"
           pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
@@ -39,9 +40,10 @@ export const Form = props => {
           onChange={handleChange}
         />
       </label>
-      <label>
+      <label className="mr-2">
         Number
         <input
+          className="border rounded"
           type="tel"
           name="number"
           pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
@@ -52,7 +54,9 @@ export const Form = props => {
         ></input>
       </label>
 
-      <button type="submit">Add contact</button>
+      <button className=" bg-slate-500 rounded-lg px-4 " type="submit">
+        Add contact
+      </button>
     </form>
   );
 };

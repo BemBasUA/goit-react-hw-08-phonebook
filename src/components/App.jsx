@@ -1,50 +1,50 @@
-import { Box } from './Box/Box';
-import { Form } from './Form/Form';
-import { Filter } from './Form/Filter/Filter';
-import { ContactList } from './Form/ContactList/ContactList';
-import shortid from 'shortid';
-import { useEffect } from 'react';
+import { Route, Routes } from 'react-router-dom';
+import { Layout } from 'Layout';
+import { Home } from 'pages/Home/Home';
+import { Login } from 'pages/Login/Login';
+import { Register } from 'pages/Register/Register';
+import { Contacts } from 'pages/Contacts/Contacts';
+import { selectIsRefreshing } from 'redux/selectors';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchContacts, addContact, deleteContact } from 'redux/operations';
+import { useEffect } from 'react';
+import { refreshUser } from 'redux/operations';
+import { RestrictedRoute } from 'RestrictedRoute';
+import { PrivateRoute } from 'PrivateRoute';
 
 export const App = () => {
   const dispatch = useDispatch();
-
+  const IsRefreshing = useSelector(selectIsRefreshing);
   useEffect(() => {
-    dispatch(fetchContacts());
-  }, [dispatch]);
-
-  const contacts = useSelector(state => state.contacts.items);
-
-  const filter = useSelector(state => state.filter);
-
-  const handleSubmit = (name, number) => {
-    const contact = {
-      name,
-      phone: number,
-      id: shortid.generate(),
-    };
-
-    const contactNames = contacts.map(({ name }) => name);
-
-    if (!contactNames.includes(contact.name)) {
-      dispatch(addContact(contact));
-    } else {
-      alert(contact.name + ' is already in contacts.');
-    }
-  };
-
-  const visibleContacts = contacts.filter(contact =>
-    contact.name.toLowerCase().includes(filter.toLowerCase())
-  );
-
-  return (
-    <Box>
-      <h1>Phonebook</h1>
-      <Form onSubmit={handleSubmit}></Form>
-      <h2>Contacts</h2>
-      <Filter></Filter>
-      <ContactList data={visibleContacts} onClick={deleteContact}></ContactList>
-    </Box>
+    dispatch(refreshUser());
+  });
+  return IsRefreshing ? (
+    'Fetching user data'
+  ) : (
+    <Routes>
+      <Route path="/" element={<Layout />}>
+        <Route index element={<Home />}></Route>
+        <Route
+          path="login"
+          element={
+            <RestrictedRoute component={<Login />} redirectTo={'/contacts'} />
+          }
+        ></Route>
+        <Route
+          path="register"
+          element={
+            <RestrictedRoute
+              component={<Register />}
+              redirectTo={'/contacts'}
+            />
+          }
+        ></Route>
+        <Route
+          path="contacts"
+          element={
+            <PrivateRoute component={<Contacts />} redirectTo={'/login'} />
+          }
+        ></Route>
+      </Route>
+    </Routes>
   );
 };
